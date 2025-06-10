@@ -2,8 +2,7 @@ import streamlit as st
 import time
 import requests
 
-def create_client_in_backend(name, passkey):
-    """Create a new client in the backend"""
+def create_client(name, passkey):
     try:
         response = requests.post('http://localhost:3000/api/clients', 
                                json={'name': name, 'passkey': passkey})
@@ -14,8 +13,7 @@ def create_client_in_backend(name, passkey):
     except Exception as e:
         return {"success": False, "error": f"Backend connection error: {str(e)}"}
 
-def verify_client_with_backend(name, passkey):
-    """Verify client credentials with backend"""
+def verify_client(name, passkey):
     try:
         response = requests.get('http://localhost:3000/api/clients')
         if response.status_code == 200:
@@ -34,16 +32,25 @@ def navigate_to(page):
     st.rerun()
 
 def render_homepage():
-    """Render the homepage with login/signup"""
+    # Mostrar status de login se logado
+    if st.session_state.get('user_logged_in', False):
+        with st.container():
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                st.success(f"✅ Logado como: {st.session_state.current_user}")
+                if st.button("🍽️ Ir para Chat", use_container_width=True, type="primary"):
+                    st.session_state.current_page = 'chat'
+                    st.rerun()
+                st.markdown("---")
     
-    # Custom CSS for homepage
+    # CSS para homepage (overrides do streamlit)
     st.markdown("""
     <style>
     .hero-container {
         text-align: center;
         padding: 2rem 0;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 10px;
+        border-radius: 15px;
         margin-bottom: 2rem;
         color: white;
     }
@@ -61,31 +68,31 @@ def render_homepage():
     }
     
     .feature-card {
-        background: #1E1E1E;
+        background: #1E1E1E !important;
         padding: 1.5rem;
-        border-radius: 8px;
-        margin: 1rem 0;
-        border-left: 4px solid #FF4B4B;
-    }
-    
-    .auth-container {
-        background: #262730;
-        padding: 2rem;
         border-radius: 10px;
         margin: 1rem 0;
+        border-left: 4px solid #FF4B4B;
+        border: 1px solid #404040;
+    }
+    
+    .feature-card h4 {
+        color: #FF4B4B !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .feature-card p {
+        color: #CCCCCC !important;
     }
     </style>
     """, unsafe_allow_html=True)
-    
-    # Hero Section
     st.markdown("""
     <div class="hero-container">
         <h1 class="hero-title">🍽️ Food Wise</h1>
         <p class="hero-subtitle">Sua ferramenta de IA para criação e gestão de conteúdo alimentar</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Two columns for content
+
     col1, col2 = st.columns([1, 1])
     
     with col1:
@@ -115,22 +122,18 @@ def render_homepage():
     with col2:
         st.markdown("### 🔐 Acesso")
         
-        # Authentication tabs
         tab1, tab2 = st.tabs(["Login", "Cadastro"])
         
         with tab1:
-            st.markdown('<div class="auth-container">', unsafe_allow_html=True)
-            
-            with st.form("login_form"):
+            with st.form("login_form", clear_on_submit=False):
                 st.markdown("**Entre com sua conta**")
-                login_name = st.text_input("Nome de usuário", key="login_name")
-                login_passkey = st.text_input("Chave de acesso", type="password", key="login_passkey")
-                login_submit = st.form_submit_button("Entrar", use_container_width=True)
+                login_name = st.text_input("Nome de usuário", key="login_name", placeholder="Digite seu nome de usuário")
+                login_passkey = st.text_input("Chave de acesso", type="password", key="login_passkey", placeholder="Digite sua chave de acesso")
+                login_submit = st.form_submit_button("Entrar", use_container_width=True, type="primary")
                 
                 if login_submit:
                     if login_name and login_passkey:
-                        # Simple authentication - just check if name exists
-                        result = verify_client_with_backend(login_name, login_passkey)
+                        result = verify_client(login_name, login_passkey)
                         if result["success"]:
                             st.session_state.user_logged_in = True
                             st.session_state.current_user = login_name
@@ -141,23 +144,19 @@ def render_homepage():
                             st.error("Usuário não encontrado. Tente fazer cadastro primeiro.")
                     else:
                         st.error("Por favor, preencha todos os campos.")
-            
-            st.markdown('</div>', unsafe_allow_html=True)
         
         with tab2:
-            st.markdown('<div class="auth-container">', unsafe_allow_html=True)
-            
-            with st.form("signup_form"):
+            with st.form("signup_form", clear_on_submit=False):
                 st.markdown("**Crie sua conta**")
-                signup_name = st.text_input("Nome de usuário", key="signup_name")
-                signup_passkey = st.text_input("Chave de acesso", type="password", key="signup_passkey")
-                signup_passkey_confirm = st.text_input("Confirme a chave", type="password", key="signup_passkey_confirm")
-                signup_submit = st.form_submit_button("Cadastrar", use_container_width=True)
+                signup_name = st.text_input("Nome de usuário", key="signup_name", placeholder="Escolha um nome de usuário")
+                signup_passkey = st.text_input("Chave de acesso", type="password", key="signup_passkey", placeholder="Crie uma chave de acesso")
+                signup_passkey_confirm = st.text_input("Confirme a chave", type="password", key="signup_passkey_confirm", placeholder="Confirme sua chave de acesso")
+                signup_submit = st.form_submit_button("Cadastrar", use_container_width=True, type="primary")
                 
                 if signup_submit:
                     if signup_name and signup_passkey and signup_passkey_confirm:
                         if signup_passkey == signup_passkey_confirm:
-                            result = create_client_in_backend(signup_name, signup_passkey)
+                            result = create_client(signup_name, signup_passkey)
                             if result["success"]:
                                 st.success("Conta criada com sucesso! Faça login para continuar.")
                             else:
@@ -169,10 +168,7 @@ def render_homepage():
                             st.error("As chaves de acesso não coincidem.")
                     else:
                         st.error("Por favor, preencha todos os campos.")
-            
-            st.markdown('</div>', unsafe_allow_html=True)
     
-    # About Section
     st.markdown("---")
     st.markdown("### 📖 Sobre o Projeto")
     
@@ -188,12 +184,6 @@ def render_homepage():
         - **Multi-módulos**: Três áreas especializadas de atuação
         - **Interface Intuitiva**: Design moderno e fácil de usar
         - **Persistência de Dados**: Seus chats são salvos automaticamente
-        
-        #### Tecnologias Utilizadas:
-        - **Frontend**: Streamlit com interface responsiva
-        - **Backend**: Node.js com Express e MySQL
-        - **IA**: Integração com modelos de linguagem avançados
-        - **Banco de Dados**: MySQL com Sequelize ORM
         """)
     
     with about_col2:

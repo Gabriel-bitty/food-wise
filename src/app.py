@@ -1,24 +1,44 @@
 import streamlit as st
-
-# Import pages
-from pages.homepage import render_homepage
-from pages.chat import render_chat_page
-from pages.styles import apply_dark_theme
+import uuid
+from components.homepage import render_homepage
+from components.chat import render_chat_page
+from components.styles import apply_dark_theme
 
 # --- Configuração da Página ---
 st.set_page_config(
     page_title="Food Wise",
     page_icon="🍽️",
     layout="centered",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
+
+hide_streamlit_style = """
+<style>
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+footer {visibility: hidden;}
+.stDeployButton {display:none;}
+[data-testid="stDecoration"] {display:none;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # Inicializar session state
 def initialize_session_state():
-    # Navigation state
     st.session_state.setdefault('current_page', 'home')
     st.session_state.setdefault('user_logged_in', False)
     st.session_state.setdefault('current_user', None)
+    
+    if 'session_id' not in st.session_state or 'last_user' not in st.session_state:
+        st.session_state['session_id'] = str(uuid.uuid4())
+        st.session_state['last_user'] = None
+    
+    current_user = st.session_state.get('current_user')
+    if current_user != st.session_state.get('last_user'):
+        st.session_state['session_id'] = str(uuid.uuid4())
+        st.session_state['last_user'] = current_user
+        if 'memory_manager' in st.session_state:
+            del st.session_state['memory_manager']
     
     # Módulo ativo
     st.session_state.setdefault('active_module', 'Logomarca')
@@ -30,7 +50,7 @@ def initialize_session_state():
         'Mock-ups': []
     })
     
-    # Estado para controlar efeito de digitação
+    # Estado para controlar efeito de digitação :D
     st.session_state.setdefault('typing_effect', {
         'active': False,
         'module': None,
@@ -40,21 +60,16 @@ def initialize_session_state():
         'start_time': 0
     })
 
-# --- Main App Logic ---
 def main():
-    # Apply dark theme
     apply_dark_theme()
     
-    # Initialize session state
     initialize_session_state()
     
-    # Route to appropriate page
     if st.session_state.current_page == 'home':
         render_homepage()
     elif st.session_state.current_page == 'chat' and st.session_state.user_logged_in:
         render_chat_page()
     else:
-        # If trying to access chat without login, redirect to home
         st.session_state.current_page = 'home'
         st.rerun()
 

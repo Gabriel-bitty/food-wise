@@ -1,3 +1,5 @@
 
 .venv/
 .streamlit/
+chat_memory.db
+__pycache__/

@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database'); // Should destructure
+const sequelize = require('../config/database');
 
 const Client = sequelize.define('Client', {
     id: {
@@ -16,6 +16,9 @@ const Client = sequelize.define('Client', {
         type: DataTypes.STRING,
         allowNull: false
     }
+}, {
+    tableName: 'clients',
+    timestamps: true
 });
 
 module.exports = Client;

@@ -13,17 +13,20 @@ python -m venv .venv
 pip install -r requirements.txt
 
 # Executar o Backend
-cd src/food-wise-backend
+Criar a file .env conforme a .env.example
+
+cd src/backend
 npm install
-npm start
+npm run dev / npm start
 
 # Para o Frontend
 cd ../../
 streamlit run src/app.py
 ```
-
-## Dependencies
-
 ### Frontend (Python)
 - Streamlit >= 1.28.0
 - Requests >= 2.31.0
+
+## Sqlite
+
+Visualização do banco de dados.

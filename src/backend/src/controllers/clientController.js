@@ -1,11 +1,10 @@
 const Client = require('../models/Client');
 
 const clientController = {
-    // Get all clients
     async getAllClients(req, res) {
         try {
             const clients = await Client.findAll({
-                attributes: ['id', 'name'] // Don't expose passkey
+                attributes: ['id', 'name'] 
             });
             res.json(clients);
         } catch (error) {
@@ -13,7 +12,6 @@ const clientController = {
         }
     },
 
-    // Verify client credentials
     async verifyClient(req, res) {
         try {
             const { name, passkey } = req.body;
@@ -38,7 +36,6 @@ const clientController = {
         }
     },
 
-    // Create a new client
     async createClient(req, res) {
         try {
             const { name, passkey } = req.body;
@@ -52,7 +49,6 @@ const clientController = {
         }
     },
 
-    // Get client by ID
     async getClientById(req, res) {
         try {
             const { id } = req.params;
