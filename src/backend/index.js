@@ -25,7 +25,7 @@ async function startServer() {
         app.listen(PORT, () => {
             console.log(`🎯 Server running on http://localhost:${PORT}`);
             console.log('');
-            console.log('👤 Cliente Seeded:');;
+            console.log('👤 Clientes Seeded:');;
         });
         
     } catch (error) {
