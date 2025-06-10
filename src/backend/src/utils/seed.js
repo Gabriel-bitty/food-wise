@@ -1,49 +1,35 @@
 const sequelize = require('../config/database');
 const Client = require('../models/Client');
 
-const seedData = {
-    clients: [
-        {
-            name: 'Dean',
-            passkey: '616'
-        }
-    ]
-};
-
 async function seedDatabase() {
     try {
         await sequelize.authenticate();
         console.log('✅ Database conectada!');
         
-        // Seed Clients
-        console.log('👥 Semeando clientes...');
+        const existingClients = await Client.findAll();
         
-        for (const clientData of seedData.clients) {
-            const existingClient = await Client.findOne({
-                where: { name: clientData.name }
-            });
+        if (existingClients.length === 0) {
+            console.log('📝 Criando clientes iniciais...');
             
-            if (!existingClient) {
-                await Client.create(clientData);
-                console.log(`   ✓ Created client: ${clientData.name}`);
-            } else {
-                console.log(`   ℹ️  Cliente '${clientData.name}' já existe...`);
-            }
+            await Client.bulkCreate([
+                { name: 'Sam', passkey: '333' },
+                { name: 'Dean', passkey: '616' },
+                { name: 'Castiel', passkey: '777' }
+            ]);
+            
+            console.log('✅ Clientes criados com sucesso!');
+        } else {
+            console.log('ℹ️  Clientes já existem, pulando a criação...');
         }
-
-        console.log('✅ Semeado com sucesso!');
-
-        const allClients = await Client.findAll({
-            attributes: ['id', 'name']
-        });
         
+        const allClients = await Client.findAll();
         console.log('📊 Current clients in database:');
         allClients.forEach(client => {
-            console.log(`   - ID: ${client.id}, Name: ${client.name}, Created: ${client.created_at}`);
+            console.log(`   - ID: ${client.id}, Name: ${client.name}`);
         });
         
     } catch (error) {
-        console.error('❌ Erro:', error.message);
+        console.error('❌ Erro ao criar seeds:', error);
         throw error;
     }
 }
