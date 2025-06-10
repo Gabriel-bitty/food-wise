@@ -1,6 +1,6 @@
 const app = require('./src/app');
 const sequelize = require('./src/config/database');
-const seedDatabase = require('./src/scripts/seed');
+const seedDatabase = require('./src/utils/seed');
 
 const PORT = process.env.PORT || 3000;
 
@@ -25,9 +25,7 @@ async function startServer() {
         app.listen(PORT, () => {
             console.log(`🎯 Server running on http://localhost:${PORT}`);
             console.log('');
-            console.log('👤 Cliente Seeded:');
-            console.log('Name: Dean');
-            console.log('Passkey: 616');
+            console.log('👤 Cliente Seeded:');;
         });
         
     } catch (error) {
