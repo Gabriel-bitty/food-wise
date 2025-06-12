@@ -43,49 +43,6 @@ def render_homepage():
                     st.rerun()
                 st.markdown("---")
     
-    # CSS para homepage (overrides do streamlit)
-    st.markdown("""
-    <style>
-    .hero-container {
-        text-align: center;
-        padding: 2rem 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        color: white;
-    }
-    
-    .hero-title {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-    
-    .hero-subtitle {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-    }
-    
-    .feature-card {
-        background: #1E1E1E !important;
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin: 1rem 0;
-        border-left: 4px solid #FF4B4B;
-        border: 1px solid #404040;
-    }
-    
-    .feature-card h4 {
-        color: #FF4B4B !important;
-        margin-bottom: 0.5rem;
-    }
-    
-    .feature-card p {
-        color: #CCCCCC !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
     st.markdown("""
     <div class="hero-container">
         <h1 class="hero-title">🍽️ Food Wise</h1>

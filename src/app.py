@@ -2,7 +2,6 @@ import streamlit as st
 import uuid
 from components.homepage import render_homepage
 from components.chat import render_chat_page
-from components.styles import apply_dark_theme
 
 # --- Configuração da Página ---
 st.set_page_config(
@@ -61,8 +60,7 @@ def initialize_session_state():
     })
 
 def main():
-    apply_dark_theme()
-    
+
     initialize_session_state()
     
     if st.session_state.current_page == 'home':

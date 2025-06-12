@@ -38,7 +38,7 @@ def generate_ai_response(prompt, module_name):
     base_response = responses.get(module_name, f"Resposta para '{prompt}' no módulo {module_name}")
     
     if len(context) > 0:
-        base_response += f"\n\n*Baseado em nossa conversa anterior, posso personalizar ainda mais essa resposta.*"
+        base_response += f""
     
     return base_response
 
