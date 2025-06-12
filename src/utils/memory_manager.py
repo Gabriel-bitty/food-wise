@@ -53,9 +53,11 @@ class AIMemoryManager:
     def _is_backend_available(self) -> bool:
         """Check if backend is available"""
         try:
-            response = requests.get("http://localhost:3000/api/health", timeout=2)
+            response = requests.get("http://localhost:3000/", timeout=2)
             return response.status_code == 200
-        except:
+        except requests.exceptions.RequestException:
+            return False
+        except Exception:  
             return False
     
     def save_message(self, module: str, role: str, content: str, context: Dict = None) -> bool:

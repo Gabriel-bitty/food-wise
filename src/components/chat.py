@@ -125,19 +125,13 @@ def render_chat_page():
         if memory_manager._is_backend_available():
             st.success("🟢 Online")
         else:
-            st.warning("🟡 Modo Offline")
-            if st.button("🔄 Sincronizar", use_container_width=True):
-                sync_result = memory_manager.sync_local_to_backend()
-                if sync_result["success"]:
-                    st.success(f"✅ {sync_result['synced']} mensagens sincronizadas")
-                else:
-                    st.error("❌ Falha na sincronização")
+            st.error("🔴 Offline")
         
         if st.button("🏠 Página Inicial", use_container_width=True):
             st.session_state.current_page = 'home'
             st.rerun()
 
-        if st.button("🚪 Logout", use_container_width=True):
+        if st.button("🚪 Sair", use_container_width=True):
             logout()
         
         st.markdown("---")
