@@ -92,8 +92,31 @@ def render_homepage():
                     if login_name and login_passkey:
                         result = verify_client(login_name, login_passkey)
                         if result["success"]:
+                            old_current_user = st.session_state.get('current_user')
+                            
+                            # Update user state
                             st.session_state.user_logged_in = True
                             st.session_state.current_user = login_name
+
+                            # If we switched users (old_current_user existed and is different from new one)
+                            if old_current_user is not None and old_current_user != login_name:
+                                # Reset chat-specific states
+                                st.session_state.module_chats = {
+                                    'Fichas Técnicas': [],
+                                    'Logomarca': [],
+                                    'Mock-ups': []
+                                }
+                                if 'memory_manager' in st.session_state:
+                                    del st.session_state.memory_manager
+                                
+                                # Reset typing effect to default
+                                st.session_state.typing_effect = {
+                                    'active': False, 'module': None, 'message_index': -1,
+                                    'char_index': 0, 'full_text': '', 'start_time': 0
+                                }
+                                # Reset active module to a default one
+                                st.session_state.active_module = 'Fichas Técnicas' 
+
                             st.success(f"Bem-vindo, {login_name}!")
                             time.sleep(1)
                             navigate_to('chat')
