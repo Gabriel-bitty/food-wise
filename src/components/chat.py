@@ -167,7 +167,7 @@ def render_chat_page():
         
     
     # Lógica do chat
-    st.title("🍽️ Food Wise - Chat IA")
+    st.title("🍽️ Food Wise")
     st.markdown(f"**Módulo Ativo:** {st.session_state.active_module}")
     
     chat_container = st.container()

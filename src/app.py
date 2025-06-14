@@ -8,7 +8,7 @@ st.set_page_config(
     page_title="Food Wise",
     page_icon="🍽️",
     layout="centered",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="auto",
 )
 
 # Custom CSS to change the theme colors
